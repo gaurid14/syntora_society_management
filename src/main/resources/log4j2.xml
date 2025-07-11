@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="basePath">C:/Users/gauri/IdeaProjects/societyhub/logs</Property>
+    </Properties>
+    <Appenders>
+        <!-- File Appender for AuthController -->
+        <File name="AuthLog" fileName="${basePath}/auth.log" append="true">
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{1} - %m%n" />
+        </File>
+
+        <!-- File Appender for SocietyController -->
+        <File name="SocietyLog" fileName="${basePath}/societyReg.log" append="true">
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{1} - %m%n" />
+        </File>
+
+        <!-- File Appender for ResidentController -->
+        <File name="ResidentLog" fileName="${basePath}/resident.log" append="true">
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{1} - %m%n" />
+        </File>
+
+        <!-- File Appender for FileUpload -->
+        <File name="FileUploadLog" fileName="${basePath}/fileUpload.log" append="true">
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{1} - %m%n" />
+        </File>
+
+        <!-- File Appender for EmailController -->
+        <File name="EmailLog" fileName="${basePath}/email.log" append="true">
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{1} - %m%n" />
+        </File>
+
+        <!-- Console Appender for debugging -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{1} - %m%n" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger for AuthController -->
+        <Logger name="com.example.societyhub.controller.AuthController" level="info" additivity="false">
+            <AppenderRef ref="AuthLog" />
+        </Logger>
+
+        <!-- Logger for SocietyController -->
+        <Logger name="com.example.societyhub.controller.SocietyController" level="info" additivity="false">
+            <AppenderRef ref="SocietyLog" />
+        </Logger>
+
+        <!-- Logger for ResidentController -->
+        <Logger name="com.example.societyhub.controller.ResidentController" level="info" additivity="false">
+            <AppenderRef ref="ResidentLog" />
+        </Logger>
+
+        <!-- Logger for FileUpload -->
+        <Logger name="com.example.societyhub.controller.FileUpload" level="info" additivity="false">
+            <AppenderRef ref="FileUploadLog" />
+        </Logger>
+
+        <!-- Logger for EmailController -->
+        <Logger name="com.example.societyhub.controller.EmailController" level="info" additivity="false">
+            <AppenderRef ref="EmailLog" />
+        </Logger>
+
+        <!-- Root Logger -->
+        <Root level="info">
+            <AppenderRef ref="AuthLog" />
+            <AppenderRef ref="SocietyLog" />
+            <AppenderRef ref="ResidentLog" />
+            <AppenderRef ref="FileUploadLog" />
+            <AppenderRef ref="EmailLog" />
+        </Root>
+
+    </Loggers>
+</Configuration>
