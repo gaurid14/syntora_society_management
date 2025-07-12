@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-sections {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 20px;
+        }
+
+        .society-list {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .society-list h2 {
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #2980b9;
+        }
+
+        .society-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .society-list li {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .society-list li:hover {
+            background-color: #dcdcdc;
+        }
+
+        .details-section {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: none; /* Initially hidden */
+        }
+
+        .details-section h2 {
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #2980b9;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background-color: #21618c;
+        }
+
+        .logout-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .logout-button .btn-logout {
+            padding: 12px 24px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .logout-button .btn-logout:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+<div class="container">
+    <h1>Admin Dashboard</h1>
+
+    <div class="dashboard-sections">
+        <!-- Society List Section -->
+        <div class="society-list">
+            <h2>All Societies</h2>
+            <ul id="societyList">
+                <!-- Loop through societies dynamically -->
+                <li th:each="society : ${societies}" th:onclick="'showDetails(\'' + ${society.sid} + '\')'">
+                    <span th:text="${society.name}">Society Name</span>
+                </li>
+            </ul>
+        </div>
+        <!-- Society Details Section -->
+        <div th:each="society : ${societies}" class="details-section" th:id="${society.sid}">
+            <h2 th:text="${society.name} + ' Details'">Society Details</h2>
+<!--            <p><strong>Society Admin:</strong> <span th:each="admin : ${society.admin}"></span><span th:text="${admin.name}">Admin Name</span></p>-->
+<!--            <p><strong>Email:</strong> <span th:text="${admin.email_id}">admin@example.com</span></p>-->
+<!--            <p><strong>Phone:</strong> <span th:text="${admin.contact_no}">+123456789</span></p>-->
+<!--            <p><strong>Mygate No:</strong> <span th:text="${admin.mygate_no}">000000</span></p>-->
+            <h3>Admins</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Admin Name</th>
+                    <th>Contact Number</th>
+                    <th>Email</th>
+                    <th>MyGate No</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="admin : ${society.admins}">
+                    <td th:text="${admin.name}">Admin Name</td>
+                    <td th:text="${admin.contact_no}">Contact No</td>
+                    <td th:text="${admin.email_id}">Email</td>
+                    <td th:text="${admin.mygate_no}">MyGate No</td>
+                </tr>
+                </tbody>
+            </table>
+            <h3>Residents</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact No</th>
+                    <th>MyGate Number</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Loop through residents dynamically -->
+                <tr th:each="resident : ${society.residents}">
+                    <td th:text="${resident.name}">Name</td>
+                    <td th:text="${resident.mygate_no}">MyGate Number</td>
+                    <td th:text="${resident.contactNo}">Contact No</td>
+                    <td th:text="${resident.email}">Email</td>
+                </tr>
+                </tbody>
+            </table>
+            <h3>Bills</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Maintenance Contribution</th>
+                    <th>Housing Board Contribution</th>
+                    <th>Property Tax Contribution</th>
+                    <th>Sinking fund</th>
+                    <th>Reserve Mhada Service Charge</th>
+                    <th>Subcharge</th>
+                    <th>Fine</th>
+                    <th>Building Dev Fund</th>
+                    <th>Other</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Loop through bills dynamically -->
+                <tr th:each="bill : ${society.bills}">
+                    <td th:text="${bill.maintenance_contribution}">Maintenance Contribution</td>
+                    <td th:text="${bill.housing_board_contribution}">Housing Board Contribution</td>
+                    <td th:text="${bill.property_tax_contribution}">Property Tax Contribution</td>
+                    <td th:text="${bill.sinking_fund}">Sinking fund</td>
+                    <td th:text="${bill.reserve_mhada_service_charge}">Reserve Mhada Service Charge</td>
+                    <td th:text="${bill.sub_charge}">Subcharge</td>
+                    <td th:text="${bill.fine}">Fine</td>
+                    <td th:text="${bill.building_dev_fund}">Building Dev Fund</td>
+                    <td th:text="${bill.other}">Other</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="logout-button">
+                <a href="/logout" class="btn-logout">Logout</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to display the society details based on selection
+    function showDetails(societyId) {
+        // Hide all details sections
+        var detailsSections = document.querySelectorAll('.details-section');
+        detailsSections.forEach(function(section) {
+            section.style.display = 'none';
+        });
+
+        // Show the selected society details
+        var selectedSection = document.getElementById(societyId);
+        if (selectedSection) {
+            selectedSection.style.display = 'block';
+        }
+    }
+</script>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+
+
+

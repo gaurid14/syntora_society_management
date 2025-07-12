@@ -1,0 +1,44 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>PDF Preview</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>PDF Preview</h2>-->
+<!--<div th:if="${pdfBytes != null}">-->
+<!--    <p class="user-society-id"   style="color: black;">Society ID: <i th:text="${session.adminSocietyId}">0</i></p>-->
+
+<!--    <p class="user-name" style="color: black;"> <i th:text="${session.userName}">Runwal Greens</i></p>-->
+<!--    <iframe th:src="'data:application/pdf;base64,' + ${pdfBytes}" width="100%" height="600px"></iframe>-->
+<!--</div>-->
+<!--<div th:if="${pdfBytes == null}">-->
+<!--    <p>No PDF available for preview.</p>-->
+<!--</div>-->
+<!--<form action="#" th:action="@{/api/download-pdf}" method="get">-->
+<!--    <button type="submit">Download PDF</button>-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>PDF Preview</title>
+</head>
+<body>
+<h2>PDF Preview</h2>
+<div th:if="${pdfBytes != null}">
+<!--    <p class="user-society-id" style="color: black;">Society ID: <i th:text="${session.adminSocietyId}">0</i></p>-->
+<!--    <p class="user-name" style="color: black;"> <i th:text="${session.userName}">Runwal Greens</i></p>-->
+
+    <!-- PDF Preview iframe -->
+    <iframe th:src="'data:application/pdf;base64,' + ${pdfBytes}" width="100%" height="600px"></iframe>
+</div>
+<div th:if="${pdfBytes == null}">
+    <p>No PDF available for preview.</p>
+</div>
+<!--<form th:action="@{/api/download-pdf}" method="get">-->
+<!--    <button type="submit">Download PDF</button>-->
+<!--</form>-->
+</body>
+</html>
