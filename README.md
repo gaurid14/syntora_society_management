@@ -1,10 +1,13 @@
 <p align="center">
-  <img src="src/main/resources/static/images/syntora.png" alt="Syntora Logo" width="200"/>  Syntora – Society Management Platform
+  <img src="src/main/resources/static/images/syntora.png" alt="Syntora Logo" width="120"/>
 </p>
 
-Syntora is a backend-driven society management system built using Spring Boot and PostgreSQL. It enables society administrators to manage residents, send maintenance bills and receipts, send bulk emails, and issue custom notices.
-
-A dedicated **Web Admin Panel** allows centralized management of multiple societies and their respective admins.
+<h1 align="center">Syntora</h1>
+<p align="center"><strong>Society Management Platform</strong></p>
+<p align="center">
+  A backend-driven society management system built using <strong>Spring Boot</strong> and <strong>PostgreSQL</strong>. It enables society administrators to manage residents, send maintenance bills and receipts, send bulk emails, and issue custom notices.<br/>
+  A dedicated <strong>Web Admin Panel</strong> allows centralized management of multiple societies and their respective admins.
+</p>
 
 ## Features
 
