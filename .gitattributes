@@ -1,0 +1,4 @@
+*.java linguist-detectable=true
+*.html linguist-detectable=true
+*.tsx linguist-detectable=true
+*.xml linguist-detectable=false
