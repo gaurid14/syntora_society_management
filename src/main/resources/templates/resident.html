@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch; /* Change from center alignment */
+            padding: 20px;
+        }
+        h1, h2 {
+            margin: 20px;
+            text-align: center;
+        }
+        .details {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto; /* Center the resident info section */
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .details p {
+            font-size: 1em;
+            line-height: 1.6;
+        }
+        .details p span {
+            font-weight: bold;
+            color: #333;
+        }
+        table {
+            width: 100%; /* Full width */
+            border-collapse: collapse;
+            margin: 20px auto; /* Center the table */
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        table th {
+            background-color: #0073bb;
+            color: white;
+            font-weight: bold;
+        }
+        .editable {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .save-button, .add-button {
+            margin: 20px auto; /* Center the buttons */
+            padding: 12px 20px;
+            background-color: #0073bb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 80%;
+            max-width: 200px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Resident Details</h1>
+
+    <!-- Resident Information -->
+    <div class="details">
+        <p><span>Name:</span> <span id="residentName">John Doe</span></p>
+        <p><span>Room No:</span> <span id="residentRoomNo">101</span></p>
+        <p><span>Mr./Ms.:</span> <span id="residentMrMs">Mr.</span></p>
+        <p><span>Gender:</span> <span id="residentGender">Male</span></p>
+        <p><span>Age:</span> <span id="residentAge">25</span></p>
+        <p><span>Contact No:</span> <span id="residentContactNo">123-456-7890</span></p>
+    </div>
+
+    <!-- Maintenance Table -->
+    <h2>Monthly Maintenance Payment Status</h2>
+    <table id="maintenanceTable">
+        <thead>
+        <tr>
+            <th>Year</th>
+            <th>January</th>
+            <th>February</th>
+            <th>March</th>
+            <th>April</th>
+            <th>May</th>
+            <th>June</th>
+            <th>July</th>
+            <th>August</th>
+            <th>September</th>
+            <th>October</th>
+            <th>November</th>
+            <th>December</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input class="editable" type="text" value="2024" readonly></td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+            <td>
+                <select class="editable">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Add Year Button -->
+    <button class="add-button" onclick="addYearRow()">Add Year</button>
+
+    <!-- Save Button -->
+    <button class="save-button" type="button" onclick="saveMaintenanceStatus()">Save Changes</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const roomNo = urlParams.get('roomNo');
+        const mrMs = urlParams.get('mrMs');
+        const gender = urlParams.get('gender');
+        const age = urlParams.get('age');
+        const contactNo = urlParams.get('contactNo');
+
+        // Set the extracted details into the respective spans
+        document.querySelector('span[th\\:text="${resident.name}"]').innerText = name;
+        document.querySelector('span[th\\:text="${resident.room_no}"]').innerText = roomNo;
+        document.querySelector('span[th\\:text="${resident.mr_ms}"]').innerText = mrMs;
+        document.querySelector('span[th\\:text="${resident.gender}"]').innerText = gender;
+        document.querySelector('span[th\\:text="${resident.age}"]').innerText = age;
+        document.querySelector('span[th\\:text="${resident.contact_no}"]').innerText = contactNo;
+    });
+
+    function addYearRow() {
+        const tableBody = document.getElementById('maintenanceTable').querySelector('tbody');
+        const newRow = document.createElement('tr');
+
+        // Create year input cell
+        const yearCell = document.createElement('td');
+        const yearInput = document.createElement('input');
+        yearInput.classList.add('editable');
+        yearInput.type = 'text';
+        yearInput.value = '2025'; // Default year value
+        yearInput.readOnly = true; // Make year field read-only
+        yearCell.appendChild(yearInput);
+        newRow.appendChild(yearCell);
+
+        // Create month payment status cells
+        for (let i = 0; i < 12; i++) {
+            const monthCell = document.createElement('td');
+            const select = document.createElement('select');
+            select.classList.add('editable');
+            const unpaidOption = document.createElement('option');
+            unpaidOption.value = 'Unpaid';
+            unpaidOption.textContent = 'Unpaid';
+            const paidOption = document.createElement('option');
+            paidOption.value = 'Paid';
+            paidOption.textContent = 'Paid';
+            select.appendChild(unpaidOption);
+            select.appendChild(paidOption);
+            monthCell.appendChild(select);
+            newRow.appendChild(monthCell);
+        }
+
+        tableBody.appendChild(newRow);
+    }
+
+    function saveMaintenanceStatus() {
+        const paymentStatus = Array.from(document.querySelectorAll('#maintenanceTable tbody tr')).map(row => {
+            const year = row.querySelector('td input').value;
+            const months = Array.from(row.querySelectorAll('td select')).map(select => select.value);
+            return {
+                year: year,
+                status: months
+            };
+        });
+
+        fetch('/api/update_maintenance_status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentStatus })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Maintenance status updated successfully!");
+            } else {
+                alert("Failed to update maintenance status.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resident Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 70%;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-bottom: 20px; /* Adjust the value as needed */
+        }
+        .resident-details, .download-section, .custom-email-container {
+            margin: 30px 0;
+        }
+        .yearly-bills {
+            display: flex;
+            flex-direction: column; /* Stacks years vertically */
+        }
+        .bill-container {
+            display: flex;          /* Aligns bill boxes side by side */
+            flex-wrap: wrap;       /* Allows wrapping to the next line */
+            margin-bottom: 30px;   /* Space between years */
+        }
+        .bill-box {
+            flex: 1 0 calc(25% - 15px); /* Responsive size with a margin */
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative; /* For footer positioning */
+            margin: 10px; /* Space between boxes */
+            text-align: center; /* Center align content */
+        }
+        .bill-title {
+            padding: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        .unpaid {
+            color: red; /* Red color for unpaid text */
+            font-weight: bold;
+            padding: 15px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-right: 10px; /* Space between buttons */
+        }
+        .custom-email-container textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .custom-email-container button {
+            width: 100%;
+        }
+        .month-container {
+            display: flex;               /* Enables flexbox layout */
+            flex-wrap: wrap;            /* Allows wrapping of items if they exceed the container width */
+            justify-content: flex-start; /* Aligns items to the start */
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>Resident Dashboard</h1>
+
+    <!-- Resident Details Section -->
+    <div class="resident-details">
+        <h2>Resident Details</h2>
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Flat Number:</strong> 101</p>
+        <p><strong>Contact:</strong> 9876543210</p>
+    </div>
+
+    <!-- Download Maintenance Bills Section -->
+    <div class="download-section">
+        <h2>Download Maintenance Bills</h2>
+
+        <!-- Yearly Bills Section -->
+        <div class="yearly-bills">
+            <h3>Maintenance Bills</h3>
+            <div id="bills"></div>
+        </div>
+    </div>
+
+    <!-- Custom Email Section -->
+    <div class="custom-email-container">
+        <h2>Send Custom Email</h2>
+        <textarea placeholder="Type your message here..." th:placeholder="'Type your message here...'"></textarea>
+        <button class="btn" th:onclick="'sendCustomEmail()'">Send Email</button>
+    </div>
+</div>
+
+<script>
+    // JavaScript to dynamically generate monthly bills for multiple years
+    const billData = {
+        2022: [
+            { month: 0, paid: true },  // January
+            { month: 1, paid: false }, // February
+            { month: 2, paid: true },  // March
+            { month: 3, paid: false }, // April
+            { month: 4, paid: true },  // May
+            { month: 5, paid: true },  // June
+            { month: 6, paid: false }, // July
+            { month: 7, paid: true },  // August
+            { month: 8, paid: false }, // September
+            { month: 9, paid: true },  // October
+            { month: 10, paid: false }, // November
+            { month: 11, paid: true }   // December
+        ],
+        2023: [
+            { month: 0, paid: true },
+            { month: 1, paid: true },
+            { month: 2, paid: false },
+            { month: 3, paid: true },
+            { month: 4, paid: false },
+            { month: 5, paid: true },
+            { month: 6, paid: true },
+            { month: 7, paid: false },
+            { month: 8, paid: true },
+            { month: 9, paid: false },
+            { month: 10, paid: true },
+            { month: 11, paid: false }
+        ],
+        2024: [
+            { month: 0, paid: true },
+            { month: 1, paid: false },
+            { month: 2, paid: false },
+            { month: 3, paid: true },
+            { month: 4, paid: true },
+            { month: 5, paid: false },
+            { month: 6, paid: true },
+            { month: 7, paid: false },
+            { month: 8, paid: false },
+            { month: 9, paid: true },
+            { month: 10, paid: false },
+            { month: 11, paid: true }
+        ]
+    };
+
+    const monthNames = [
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+    ];
+
+    // Function to create bill boxes
+    function createBillBox(year, month, isPaid) {
+        const billBox = document.createElement('div');
+        billBox.className = 'bill-box';
+
+        const billTitle = document.createElement('div');
+        billTitle.className = 'bill-title';
+        billTitle.innerText = monthNames[month]; // Month name above box
+        billBox.appendChild(billTitle);
+
+        if (isPaid) {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = `/api/downloadMonthlyBill(year=${year}, month=${month + 1})`; // Add 1 for month
+            downloadLink.innerHTML = `<i class="fas fa-file-pdf"></i> Download`;
+            billBox.appendChild(downloadLink);
+        } else {
+            const unpaidText = document.createElement('div');
+            unpaidText.className = 'unpaid';
+            unpaidText.innerText = 'Unpaid'; // Unpaid text
+            billBox.appendChild(unpaidText);
+        }
+
+        return billBox;
+    }
+
+    // Function to display all bills
+    function displayBills() {
+        const billsContainer = document.getElementById('bills');
+        for (const [year, months] of Object.entries(billData)) {
+            const yearContainer = document.createElement('div');
+            yearContainer.className = 'bill-container';
+
+            // Create and append year header
+            const yearHeader = document.createElement('h3');
+            yearHeader.innerText = year;
+            yearContainer.appendChild(yearHeader);
+
+            // Create a container for the month boxes
+            const monthContainer = document.createElement('div'); // New container for month boxes
+            monthContainer.className = 'month-container'; // Optional: Add a class for styling
+
+            months.forEach((monthData, index) => {
+                const billBox = createBillBox(year, index, monthData.paid);
+                monthContainer.appendChild(billBox); // Append month boxes to the new container
+            });
+
+            yearContainer.appendChild(monthContainer); // Append the month container to the year container
+            billsContainer.appendChild(yearContainer); // Finally, append the entire year container to the main bills container
+        }
+    }
+
+    // Call the function to display the bills on page load
+    displayBills();
+</script>
+</body>
+</html>

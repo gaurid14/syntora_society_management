@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Details</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Sidebar CSS -->
+    <th:block th:replace="fragments/sidebar :: sidebar-css"></th:block>
+
+    <style>
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 240px;
+            padding: 24px;
+        }
+
+        /* Page header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .page-header h2 {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Card container */
+        .card {
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Action buttons */
+        .btn-primary {
+            background: #2563eb;
+            border: none;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            border: none;
+        }
+
+        /* Table */
+        table {
+            font-size: 14px;
+        }
+
+        thead th {
+            background: #f9fafb;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        td input,
+        td select {
+            width: 100%;
+            border: none;
+            background: #f9fafb;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        input[readonly],
+        select:disabled {
+            color: #374151;
+        }
+
+        /* Edit button */
+        .btn-edit {
+            background: #2563eb;
+            color: #fff;
+            border-radius: 6px;
+            padding: 6px 12px;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background: #1e40af;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<th:block th:replace="fragments/sidebar :: sidebar('admin')"></th:block>
+
+<div class="main-content">
+
+    <!-- Header -->
+    <div class="page-header">
+        <h2 th:text="${society_name}">Society Name</h2>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" id="addResidentBtn">
+                <i class="bi bi-plus-circle"></i> Add Resident
+            </button>
+            <button class="btn btn-danger" id="deleteResidentBtn">
+                <i class="bi bi-trash"></i> Delete Selected
+            </button>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>#</th>
+                    <th>MyGate No</th>
+                    <th>Room</th>
+                    <th>BHK</th>
+                    <th>Mr/Ms</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                <tbody id="residentTableBody">
+                <tr th:each="resident, stat : ${residents}">
+                    <td><input type="checkbox"></td>
+                    <td th:text="${stat.index + 1}"></td>
+
+                    <td><input th:value="${resident.mygate_no}" data-mygate="true" readonly></td>
+                    <td><input th:value="${resident.room_no}" data-room_no="true" readonly></td>
+                    <td><input th:value="${resident.bhk}" data-bhk="true" readonly></td>
+
+                    <td>
+                        <select data-mr_ms="true" disabled>
+                            <option th:selected="${resident.mr_ms=='Mr.'}">Mr.</option>
+                            <option th:selected="${resident.mr_ms=='Ms.'}">Ms.</option>
+                        </select>
+                    </td>
+
+                    <td><input th:value="${resident.name}" data-name="true" readonly></td>
+                    <td><input th:value="${resident.gender}" data-gender="true" readonly></td>
+                    <td><input th:value="${resident.age}" data-age="true" readonly></td>
+                    <td><input th:value="${resident.email}" data-email="true" readonly></td>
+                    <td><input th:value="${resident.contactNo}" data-contactNo="true" readonly></td>
+
+                    <td>
+                        <button class="btn-edit" onclick="toggleEdit(this)">Edit</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Function to toggle between editable and non-editable states
+    function toggleEdit(button) {
+        const row = button.closest('tr');
+        const inputs = row.querySelectorAll('input');
+        const selects = row.querySelectorAll('select');
+
+        // Toggle the 'readonly' and 'disabled' attributes
+        inputs.forEach(input => {
+            if (!input.hasAttribute('data-mygate')) {
+                if (input.hasAttribute('readonly')) {
+                    input.removeAttribute('readonly');
+                    input.style.backgroundColor = '#ffffff';
+                } else {
+                    input.setAttribute('readonly', true);
+                    input.style.backgroundColor = '#f7f7f7';
+                }
+            }
+        });
+
+        selects.forEach(select => {
+            if (select.hasAttribute('disabled')) {
+                select.removeAttribute('disabled');
+                select.style.backgroundColor = '#ffffff';
+            } else {
+                select.setAttribute('disabled', true);
+                select.style.backgroundColor = '#f7f7f7';
+            }
+        });
+
+        // Toggle button text between "Edit" and "Save"
+        button.textContent = button.textContent === 'Save' ? 'Edit' : 'Save';
+
+        // If saving, update resident data
+        if (button.textContent === 'Edit') {
+            const residentData = {
+                mygate_no: row.querySelector("input[data-mygate='true']").value,
+                room_no: row.querySelector("input[data-room_no='true']").value,
+                bhk: row.querySelector("input[data-bhk='true']").value,
+                mr_ms: row.querySelector("select[data-mr_ms='true']").value,
+                name: row.querySelector("input[data-name='true']").value,
+                gender: row.querySelector("input[data-gender='true']").value,
+                age: row.querySelector("input[data-age='true']").value,
+                email: row.querySelector("input[data-email='true']").value,
+                contactNo: row.querySelector("input[data-contactNo='true']").value,
+
+            };
+
+            console.log(residentData);
+
+            // Send the updated data to the backend with a POST request
+            fetch('/api/update_resident', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(residentData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Resident updated successfully!');
+                    button.textContent = 'Edit'; // Toggle back to Edit
+                    inputs.forEach(input => input.setAttribute('readonly', true));
+                    selects.forEach(select => select.setAttribute('disabled', true));
+                } else {
+                    alert('Error updating resident: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating resident: ' + error);
+            });
+        }
+    }
+
+    // Function to add a new row (resident) to the table
+    document.getElementById('addResidentBtn').addEventListener('click', function() {
+        const tableBody = document.getElementById('residentTableBody');
+        const newRow = document.createElement('tr');
+
+        newRow.innerHTML = `
+            <td><input type="checkbox"></td>
+            <td>${tableBody.rows.length + 1}</td>
+            <td><input type="text" placeholder="MyGate No" readonly></td>
+            <td><input type="text" placeholder="Room No"></td>
+            <td><input type="text" placeholder="BHK"></td>
+            <td>
+                <select data-mr_ms="true">
+                    <option>Mr.</option>
+                    <option>Ms.</option>
+                </select>
+            </td>
+            <td><input type="text" placeholder="Name"></td>
+            <td><input type="text" placeholder="Gender"></td>
+            <td><input type="number" placeholder="Age"></td>
+            <td><input type="email" placeholder="Email"></td>
+            <td><input type="text" placeholder="Contact No"></td>
+            <td>
+                <button class="toggle-btn" onclick="toggleAdd(this)">Save</button>
+            </td>
+        `;
+
+        tableBody.appendChild(newRow);
+        updateSerialNumbers(); // Update serial numbers after adding a row
+    });
+
+    // Function to toggle between editable and non-editable states and save the new resident
+    function toggleAdd(button) {
+        const row = button.closest('tr');
+        const inputs = row.querySelectorAll('input');
+        const selects = row.querySelectorAll('select');
+
+        // Collect the resident data
+        const residentData = {
+            room_no: row.querySelector('input[placeholder="Room No"]').value,
+            bhk: row.querySelector('input[placeholder="BHK"]').value,
+            mr_ms: row.querySelector('select').value,
+            name: row.querySelector('input[placeholder="Name"]').value,
+            gender: row.querySelector('input[placeholder="Gender"]').value,
+            age: row.querySelector('input[placeholder="Age"]').value,
+            email: row.querySelector('input[placeholder="Email"]').value,
+            contactNo: row.querySelector('input[placeholder="Contact No"]').value,
+
+        };
+
+        // Send the new resident data to the backend with a POST request
+        fetch('/api/add_resident', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(residentData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Resident added successfully!');
+                button.textContent = 'Edit'; // Toggle back to Edit
+                inputs.forEach(input => input.setAttribute('readonly', true));
+                selects.forEach(select => select.setAttribute('disabled', true));
+                updateSerialNumbers(); // Update serial numbers after adding
+            } else {
+                alert('Error adding resident: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error adding resident: ' + error);
+        });
+    }
+
+    // Function to update serial numbers
+    function updateSerialNumbers() {
+        const rows = document.querySelectorAll('#residentTableBody tr');
+        rows.forEach((row, index) => {
+            row.cells[1].textContent = index + 1; // Update the serial number
+        });
+    }
+
+    // Delete Resident Button Click Event
+    document.getElementById("deleteResidentBtn").addEventListener("click", function() {
+        const checkedBoxes = document.querySelectorAll("#residentTableBody input[type='checkbox']:checked");
+        if (checkedBoxes.length === 0) {
+            alert('Please select at least one resident to delete.');
+            return;
+        }
+        const mygateNos = [];
+        checkedBoxes.forEach(function(checkbox) {
+            const row = checkbox.closest('tr');
+            const mygateNo = row.querySelector("input[data-mygate='true']").value;
+            mygateNos.push(mygateNo);
+        });
+        fetch('/api/delete_residents', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ mygateNos })
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data === 'success') {
+                alert('Selected residents deleted successfully!');
+                checkedBoxes.forEach(checkbox => {
+                    checkbox.closest('tr').remove();
+                });
+            } else {
+                alert('Error deleting residents');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting residents');
+        });
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Residents Details</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+
+    <!-- Sidebar CSS Fragment -->
+    <th:block th:replace="fragments/sidebar :: sidebar-css"></th:block>
+
+    <style>
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+        }
+
+        /* Main content aligned with sidebar */
+        .main-content {
+            margin-left: 240px;
+            padding: 24px;
+        }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Info note */
+        .note-section {
+            background: #eef2ff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Month tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 8px 14px;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .tab:hover,
+        .tab.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+        }
+
+        /* Table (enterprise) */
+        .table-wrapper {
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead th {
+            background: #f9fafb;
+            color: #374151;
+            font-weight: 600;
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        input,
+        select {
+            width: 100%;
+            border: none;
+            background: #f9fafb;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        input[readonly] {
+            color: #374151;
+        }
+
+        /* Status colors */
+        select option[value="Paid"] { color: #15803d; }
+        select option[value="Unpaid"] { color: #b91c1c; }
+
+        /* Buttons */
+        .btn-edit {
+            background: #2563eb;
+            color: #fff;
+            border-radius: 6px;
+            padding: 6px 12px;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background: #1e40af;
+        }
+
+        .btn-send {
+            background: #10b981;
+            color: #fff;
+            border-radius: 6px;
+            padding: 6px 12px;
+            border: none;
+        }
+
+        .btn-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<th:block th:replace="fragments/sidebar :: sidebar('admin')"></th:block>
+
+<div class="main-content">
+
+    <div class="note-section">
+        <strong>Important:</strong>
+        Paid residents are shown in <span class="text-success">green</span>,
+        unpaid in <span class="text-danger">red</span>.
+    </div>
+
+    <h2 th:text="${society_name}">Society Name</h2>
+    <p id="current-year"></p>
+
+    <script>
+        document.getElementById("current-year").textContent =
+            new Date().getFullYear();
+    </script>
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabs">
+        <a class="tab" data-month="January" href="/api/generateResidentBill?month=january">January</a>
+        <a class="tab" data-month="February" href="/api/generateResidentBill?month=february">February</a>
+        <a class="tab" data-month="March" href="/api/generateResidentBill?month=march">March</a>
+        <a class="tab" data-month="April" href="/api/generateResidentBill?month=april">April</a>
+        <a class="tab" data-month="May" href="/api/generateResidentBill?month=may">May</a>
+        <a class="tab" data-month="June" href="/api/generateResidentBill?month=june">June</a>
+        <a class="tab" data-month="July" href="/api/generateResidentBill?month=july">July</a>
+        <a class="tab" data-month="August" href="/api/generateResidentBill?month=august">August</a>
+        <a class="tab" data-month="September" href="/api/generateResidentBill?month=september">September</a>
+        <a class="tab" data-month="October" href="/api/generateResidentBill?month=october">October</a>
+        <a class="tab" data-month="November" href="/api/generateResidentBill?month=november">November</a>
+        <a class="tab" data-month="December" href="/api/generateResidentBill?month=december">December</a>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>Select</th>
+                <th>#</th>
+                <th>MyGate No</th>
+                <th>Room</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Action</th>
+                <th>Send Bill</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="resident, stat : ${residents}">
+                <td><input type="checkbox"></td>
+                <td th:text="${stat.index + 1}"></td>
+                <td><input th:value="${resident.mygate_no}" data-mygate="true" readonly></td>
+                <td><input th:value="${resident.room_no}" data-room_no="true" readonly></td>
+                <td><input th:value="${resident.name}" data-name="true" readonly></td>
+                <td><input th:value="${resident.email}" data-email="true" readonly></td>
+
+                <td>
+                    <select disabled data-status="true" required>
+                        <option th:selected="${resident.status=='Paid'}">Paid</option>
+                        <option th:selected="${resident.status=='Unpaid'}">Unpaid</option>
+                        <option th:selected="${resident.status=='Paid_with_fine'}">Paid with fine</option>
+                    </select>
+                </td>
+
+                <td>
+                    <button class="btn-edit" onclick="toggleEdit(this)">Edit</button>
+                </td>
+
+                <td>
+                    <button class="btn-send" onclick="sendMaintenanceBill(this)">
+                        Send Receipt
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    // Declare selectedMonth globally
+    let selectedMonth = new Date().toLocaleString('default', { month: 'long' });
+
+    function toggleEdit(button) {
+        const row = button.closest('tr'); // Get the row of the clicked button
+        const statusSelect = row.querySelector("select[data-status='true']"); // Get the status dropdown
+
+        // Toggle the 'disabled' attribute for the status dropdown
+        if (statusSelect.hasAttribute('disabled')) {
+            statusSelect.removeAttribute('disabled');
+            statusSelect.style.backgroundColor = '#ffffff'; // Set background color for editable
+        } else {
+            statusSelect.setAttribute('disabled', true);
+            statusSelect.style.backgroundColor = '#f7f7f7'; // Reset background color
+        }
+
+        // Toggle button text between "Edit" and "Save"
+        button.textContent = button.textContent === 'Save' ? 'Edit' : 'Save';
+
+        // If saving, update the resident's status
+        if (button.textContent === 'Edit') {
+            const updatedStatus = statusSelect.value; // Get the updated status value
+            const residentId = row.querySelector("input[data-mygate='true']").value; // Get the MyGate number (unique ID)
+
+            fetch('/api/update_status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ month: selectedMonth, mygate_no: residentId, status: updatedStatus })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
+                }
+                return response.json(); // Ensure the response is JSON
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error("Error:", data.error);
+                } else {
+                    console.log("Resident data:", data.residents);
+                }
+            })
+            .catch(error => {
+                console.error("Fetch Error:", error);
+            });
+
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select default month (current month) on page load
+        document.querySelectorAll('.tab').forEach(tab => {
+            if (tab.dataset.month === selectedMonth) {
+                tab.classList.add('active');
+            }
+        });
+
+        // Event listener for clicking on tabs
+        document.getElementById("tabs").addEventListener("click", function(event) {
+            if (event.target.classList.contains("tab")) {
+                document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+                event.target.classList.add("active");
+
+                selectedMonth = event.target.dataset.month;  // Update the selected month
+            }
+        });
+    });
+
+    function sendMaintenanceBill(button) {
+        const row = button.closest('tr'); // Get the row of the clicked button
+        const statusSelect = row.querySelector("select[data-status='true']"); // Get the status dropdown
+        const status = statusSelect.value; // Get the updated status value
+        const mygate_no = row.querySelector("input[data-mygate='true']").value; // Get the MyGate number (unique ID)
+        const email = row.querySelector("input[data-email='true']").value;
+
+        fetch('/api/emailBill', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mygate_no, selectedMonth, status, email })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server Error: ${response.status}`);
+            }
+            return response.json(); // Ensure the response is JSON
+        })
+        .then(data => {
+            alert("Maintenance Bill Receipt Sent Successfully!");
+        })
+        .catch(error => {
+            console.error("Error sending maintenance bill:", error);
+            alert("Failed to send maintenance bill.");
+        });
+    }
+
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Disable "Send Maintenance Bill Receipt" button if status is "Unpaid" on page load
+        document.querySelectorAll("tr").forEach(row => {
+            const statusSelect = row.querySelector("select[data-status='true']");
+            const sendButton = row.querySelector("button[onclick*='sendMaintenanceBill']");
+
+            if (statusSelect && sendButton) {
+                if (statusSelect.value === "Unpaid") {
+                    sendButton.setAttribute("disabled", true);
+                    sendButton.style.opacity = "0.5"; // Reduce opacity to indicate disabled state
+                }
+            }
+        });
+
+        // Add event listener to update button state when status changes
+        document.querySelectorAll("select[data-status='true']").forEach(select => {
+            select.addEventListener("change", function() {
+                const row = this.closest("tr");
+                const sendButton = row.querySelector("button[onclick*='sendMaintenanceBill']");
+
+                if (sendButton) {
+                    if (this.value === "Unpaid") {
+                        sendButton.setAttribute("disabled", true);
+                        sendButton.style.opacity = "0.5";
+                    } else {
+                        sendButton.removeAttribute("disabled");
+                        sendButton.style.opacity = "1";
+                    }
+                }
+            });
+        });
+    });
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Get current month name (January, February, etc.)
+        const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+
+        const tabs = document.querySelectorAll(".tab");
+
+        // Highlight current month on page load
+        tabs.forEach(tab => {
+            if (tab.dataset.month === currentMonth) {
+                tab.classList.add("active");
+            }
+        });
+
+        // Handle click highlight
+        tabs.forEach(tab => {
+            tab.addEventListener("click", function () {
+                tabs.forEach(t => t.classList.remove("active"));
+                this.classList.add("active");
+            });
+        });
+
+    });
+</script>
+
+<!--<div th:replace="fragments/footer :: footer"></div>-->
+</body>
+</html>

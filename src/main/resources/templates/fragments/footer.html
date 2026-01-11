@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale.language}">
+
+<footer class="footer gradient-bg text-white mt-auto">
+    <div class="container py-4">
+
+        <div class="row">
+            <div class="col-md-6">
+                <h5 th:text="#{footer.brand}">Syntora</h5>
+                <p th:text="#{footer.description}">
+                    Community management platform
+                </p>
+            </div>
+
+            <div class="col-md-3">
+                <h6 th:text="#{footer.quickLinks}">Quick Links</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#about-us" th:text="#{nav.about}">About</a></li>
+                    <li><a href="#features" th:text="#{nav.features}">Features</a></li>
+                    <li><a href="#contact" th:text="#{nav.contact}">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h6 th:text="#{footer.followUs}">Follow Us</h6>
+                <a href="https://wa.me/1234567890" class="me-2 text-white">
+                    <i class="bi bi-whatsapp fs-4"></i>
+                </a>
+                <a href="mailto:societyhub@example.com" class="text-white">
+                    <i class="bi bi-envelope fs-4"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <small th:text="#{footer.copyright}">
+                © 2025 Syntora. All rights reserved.
+            </small>
+        </div>
+
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

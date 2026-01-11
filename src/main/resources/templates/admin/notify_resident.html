@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Residents</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Sidebar CSS -->
+    <th:block th:replace="fragments/sidebar :: sidebar-css"></th:block>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 240px;
+            padding: 32px;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card-header {
+            font-weight: 600;
+            background: #f9fafb;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #2563eb;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+
+        textarea {
+            resize: none;
+            min-height: 140px;
+        }
+
+        /* Progress */
+        .progress {
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+            display: none;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        function showProgress() {
+            const bar = document.getElementById("progress");
+            bar.style.display = "block";
+        }
+    </script>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<th:block th:replace="fragments/sidebar :: sidebar('admin')"></th:block>
+
+<div class="main-content">
+
+    <!-- Header -->
+    <div class="page-header mb-4">
+        <h1>Email Residents</h1>
+        <p class="text-muted">
+            Send system-generated or custom emails to residents securely
+        </p>
+    </div>
+
+    <!-- Audience Summary -->
+    <div class="alert alert-info d-flex align-items-center mb-4">
+        <i class="bi bi-people-fill me-3 fs-4"></i>
+        <div>
+            <strong>Email Audience:</strong>
+            All active residents with registered email addresses.
+            <div class="text-muted small">
+                Make sure data is reviewed before sending bulk emails.
+            </div>
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <!-- LEFT: Automated Emails -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <strong>Automated System Emails</strong>
+            </div>
+
+            <div class="card-body d-grid gap-4">
+
+                <!-- Maintenance Bills -->
+                <div>
+                    <div class="fw-semibold mb-1">
+                        <i class="bi bi-receipt me-2 text-primary"></i>
+                        Maintenance Bills
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Sends monthly maintenance bills to all residents.
+                    </p>
+
+                    <form th:action="@{/api/sendBill}" method="post" onsubmit="showProgress()">
+                        <button class="btn btn-primary w-100">
+                            Send Maintenance Bills
+                        </button>
+                    </form>
+                </div>
+
+                <hr class="my-2">
+
+                <!-- MyGate Numbers -->
+                <div>
+                    <div class="fw-semibold mb-1">
+                        <i class="bi bi-door-open me-2 text-primary"></i>
+                        MyGate Numbers
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Sends registered MyGate numbers to residents.
+                    </p>
+
+                    <form th:action="@{/api/sendMyGate}" method="post" onsubmit="showProgress()">
+                        <button class="btn btn-outline-primary w-100">
+                            Send MyGate Numbers
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT: Announcements -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <strong>
+                    <i class="bi bi-megaphone-fill me-2 text-primary"></i>
+                    Society Announcements
+                </strong>
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted small mb-4">
+                    Publish official announcements for residents.
+                    These will be sent via <strong>Email</strong>
+                </p>
+
+                <form th:action="@{/api/sendNotice}" method="post" onsubmit="showProgress()">
+
+                    <!-- Announcement Title -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Announcement Title
+                        </label>
+                        <input
+                                type="text"
+                                name="title"
+                                class="form-control"
+                                placeholder="e.g. Water Supply Interruption, AGM Notice"
+                                required>
+                    </div>
+
+                    <!-- Priority / Category -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Category
+                        </label>
+                        <select name="category" class="form-select" required>
+                            <option value="">Select category</option>
+                            <option value="GENERAL">General Notice</option>
+                            <option value="MAINTENANCE">Maintenance</option>
+                            <option value="BILLING">Billing</option>
+                            <option value="EMERGENCY">Emergency</option>
+                        </select>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Announcement Message
+                        </label>
+                        <textarea
+                                name="customMessage"
+                                class="form-control"
+                                placeholder="Write the announcement clearly. This message will be sent to all residents."
+                                required></textarea>
+                    </div>
+
+                    <!-- Delivery Info -->
+                    <div class="alert alert-secondary small d-flex align-items-center mb-3">
+                        <i class="bi bi-info-circle me-2"></i>
+                        This announcement will be delivered via <strong>Email</strong>.
+                    </div>
+
+                    <!-- Submit -->
+                    <button class="btn btn-primary w-100">
+                        <i class="bi bi-send-fill me-2"></i>
+                        Publish Announcement
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <hr class="my-5">
+
+    <h5 class="fw-semibold mb-3">
+        <i class="bi bi-journal-text me-2"></i>
+        Published Announcements
+    </h5>
+
+    <div class="list-group">
+
+        <div class="list-group-item mb-2 shadow-sm"
+             th:each="announcement : ${announcements}">
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+                    <h6 class="fw-bold mb-1" th:text="${announcement.title}"></h6>
+
+                    <span th:text="${announcement.category != null ? announcement.category : 'GENERAL'}"></span>
+
+                    <small class="text-muted">
+                        Published on
+                        <span th:text="${announcement.createdAt != null ? #temporals.format(announcement.createdAt, 'dd MMM yyyy HH:mm') : '-'}"></span>
+
+                    </small>
+
+                    <p class="mt-2 mb-0 text-muted"
+                       th:text="${announcement.message}">
+                    </p>
+                </div>
+
+                <!-- Delete -->
+                <form th:action="@{/admin/announcements/delete}"
+                      method="post"
+                      class="ms-3">
+
+<!--                    <input type="hidden" name="id"-->
+<!--                           th:value="${announcement.id}"/>-->
+
+                    <button class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this announcement?')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(announcements)}"
+             class="text-muted small">
+            No announcements published yet.
+        </div>
+
+    </div>
+
+    <!-- Progress -->
+    <div class="progress mt-4" id="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-success mt-4" th:if="${message}">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${message}"></span>
+    </div>
+
+    <div class="alert alert-danger mt-4" th:if="${error}">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${error}"></span>
+    </div>
+
+</div>
+
+
+<script>
+        function showProgressBar() {
+          const progressBar = document.getElementById('progressBar');
+          const progressContainer = document.getElementById('progressContainer');
+          let width = 0;
+          progressContainer.style.display = 'block';
+
+          const interval = setInterval(() => {
+            if (width >= 100) {
+              clearInterval(interval);
+            } else {
+              width++;
+              progressBar.style.width = width + '%';
+            }
+          }, 20);
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+[
+  {
+    "route": "",
+    "params": {},
+    "title": "Home"
+  },
+  {
+    "route": "admin_register",
+    "params": {},
+    "title": "Admin Registration"
+  },
+  {
+    "route": "App",
+    "params": {},
+    "title": "App"
+  },
+  {
+    "route": "forgot_password",
+    "params": {},
+    "title": "Forgot Password"
+  },
+  {
+    "route": "login",
+    "params": {},
+    "title": "Login"
+  },
+  {
+    "route": "logout",
+    "params": {},
+    "title": "Logout"
+  },
+  {
+    "route": "society_register",
+    "params": {},
+    "title": "Society Registration"
+  },
+  {
+    "route": "webadmin",
+    "params": {},
+    "title": "Web Admin Login"
+  }
+]

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Dashboard</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <th:block th:replace="fragments/sidebar :: sidebar-css"></th:block>
+
+    <style>
+
+        :root {
+            --brand-blue-dark: #1e40af;
+            --brand-blue-main: #2563eb;
+            --brand-blue-light: #dbeafe;
+        }
+
+        /* Top admin header */
+        .admin-header {
+            margin-left: 220px;          /* align with sidebar */
+            height: 64px;
+            background: var(--brand-blue-light);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid #c7dbf5;
+        }
+
+        .admin-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Main page content */
+        .main-content {
+            margin-left: 240px;
+            padding: 24px;
+        }
+
+
+        .sticky-notes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            min-height: 400px;
+            background: #f5f9ff;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .sticky-note {
+            position: relative;
+            background-color: #fffacd;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            width: 240px;
+            font-family: 'Indie Flower', cursive;
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Softer pastel sticky notes */
+        .sticky-note:nth-child(3n) {
+            background-color: #fef9c3;   /* light pastel yellow */
+            transform: rotate(1.5deg);
+        }
+
+        .sticky-note:nth-child(3n+1) {
+            background-color: #ffedd5;   /* light peach */
+            transform: rotate(-2deg);
+        }
+
+        .sticky-note:nth-child(3n+2) {
+            background-color: #dcfce7;   /* soft mint green */
+            transform: rotate(2.5deg);
+        }
+
+        .sticky-note:hover {
+            transform: scale(1.03) rotate(0deg);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .sticky-note::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: #2563eb;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .sticky-note h6 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .sticky-note p {
+            font-size: 17px;
+            color: #444;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+
+        .sticky-note button {
+            background-color: #f87171;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .sticky-note button:hover {
+            background-color: #c62828;
+        }
+
+        @media (max-width: 600px) {
+            .sticky-note {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar Fragment -->
+<th:block th:replace="fragments/sidebar :: sidebar('admin')"></th:block>
+
+<!--<div class="main-content" style="margin-left: 220px; padding: 20px;">-->
+<!--    <h2 class="text-center mb-4">Admin Sticky Notes</h2>-->
+<!--<div class="admin-header">-->
+<!--    <h2>Admin Sticky Notes</h2>-->
+<!--    <div class="ms-auto">-->
+<!--        <span class="text-muted small">Admin Panel</span>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div class="main-content">
+
+    <!-- Add New Note Form -->
+    <form id="add-note-form">
+        <div class="row g-2">
+            <div class="col-md-4">
+                <input type="text" name="title" class="form-control" th:placeholder="#{admin.sticky.addTitle}" required>
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="message" th:placeholder="#{admin.sticky.addMessage}" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success w-100" th:text="#{admin.sticky.addButton}">Add Note</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="note-response"></div>
+
+    <!-- Notes -->
+    <div class="sticky-notes-container">
+        <div class="sticky-note" th:each="note : ${notes}">
+            <h6 th:text="${note.title}"></h6>
+            <p th:text="${note.message}"></p>
+
+            <button class="delete-btn" th:text="#{admin.sticky.deleteButton}">Delete</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.getElementById("add-note-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const title = document.getElementById("note-title").value;
+        const message = document.getElementById("note-message").value;
+
+        fetch("/admin/add_note", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ title: title, message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const responseDiv = document.getElementById("note-response");
+            if (data.success) {
+                responseDiv.innerText = data.message;
+                responseDiv.style.color = "green";
+                document.getElementById("add-note-form").reset();
+                setTimeout(() => location.reload(), 1000); // Refresh to show new note
+            } else {
+                responseDiv.innerText = data.error || "Error adding note.";
+                responseDiv.style.color = "red";
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            const responseDiv = document.getElementById("note-response");
+            responseDiv.innerText = "Error occurred.";
+            responseDiv.style.color = "red";
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const sid = button.getAttribute('data-sid');
+            const title = button.getAttribute('data-title');
+            deleteNote(sid, title);
+        });
+    });
+
+
+    function deleteNote(sid, title) {
+        fetch('/admin/delete_note', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ sid: sid, title: title })
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            location.reload();
+        });
+    }
+
+</script>
+
+</body>
+</html>

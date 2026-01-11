@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:lang="${#locale.language}">
+<head th:replace="fragments/header :: head"></head>
+
+<body>
+
+<!-- Header -->
+<div th:replace="fragments/header :: body"></div>
+
+<!-- Hero Banner -->
+<section class="py-5 text-center bg-light mt-5 pt-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold" th:text="#{home.welcome}">
+            Welcome to Syntora
+        </h1>
+
+        <p class="lead" th:text="#{home.tagline}">
+            Your Smart Solution for Society Management
+        </p>
+
+        <a href="#features"
+           class="btn btn-primary btn-lg mt-3"
+           th:text="#{home.explore}">
+            Explore Features
+        </a>
+    </div>
+</section>
+
+<!-- About Us -->
+<section id="about-us" class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="/images/about-us-image.png"
+                     class="img-fluid rounded"
+                     alt="About Us">
+            </div>
+            <div class="col-md-6">
+                <h2 th:text="#{about.title}">About Syntora</h2>
+
+                <p class="lead" th:text="#{about.subtitle}">
+                    Simplifying community life with our cutting-edge platform.
+                </p>
+
+                <p th:text="#{about.description}">
+                    We bring transparency, ease, and efficiency to managing societies.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title" th:text="#{features.title}">
+            Key Features
+        </h2>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-shield-lock-fill fs-1 text-primary"></i>
+                    <h4 class="mt-3" th:text="#{features.admin}">
+                        Admin Control
+                    </h4>
+                    <p th:text="#{features.admin.desc}">
+                        Manage users, settings, and roles securely.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-house-fill fs-1 text-success"></i>
+                    <h4 class="mt-3" th:text="#{features.society}">
+                        Society Admin
+                    </h4>
+                    <p th:text="#{features.society.desc}">
+                        Manage residents, billing, and announcements.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-person-lines-fill fs-1 text-warning"></i>
+                    <h4 class="mt-3" th:text="#{features.resident}">
+                        Residents
+                    </h4>
+                    <p th:text="#{features.resident.desc}">
+                        Access bills, payments, and updates easily.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="py-5">
+    <div class="container">
+        <h2 class="section-title" th:text="#{contact.title}">
+            Get in Touch
+        </h2>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card p-3 h-100">
+                    <h5 th:text="#{contact.address}">Address</h5>
+                    <p th:text="#{contact.address.value}">
+                        Don Bosco Institute of Technology, Kurla(West)
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3 h-100">
+                    <h5 th:text="#{contact.email}">Email</h5>
+                    <a href="mailto:societyhub@example.com">
+                        societyhub@example.com
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3 h-100">
+                    <h5 th:text="#{contact.phone}">Phone</h5>
+                    <a href="tel:+911234567890">
+                        +91 1234567890
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
