@@ -39,13 +39,22 @@
 ## Screenshots
 
 ### Login
-![Login](screenshots/login.png)
+<p align="center">
+  <img src="screenshots/login.png" width="800"/>
+</p>
 
 ### Admin Dashboard
-![Admin Dashboard](screenshots/admin_dashboard.png)
+<p align="center">
+  <img src="screenshots/admin_dashboard.png" width="800"/>
+</p>
 
-### Send Bill 
-![Send Bill](screenshots/send_bill.png)
+### Send Bill
+<p align="center">
+  <img src="screenshots/send_bill.png" width="800"/>
+</p>
 
 ### Announcements
-![Announcements](screenshots/announcements.png)
+<p align="center">
+  <img src="screenshots/announcements.png" width="800"/>
+</p>
+
